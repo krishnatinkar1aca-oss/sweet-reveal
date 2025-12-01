@@ -1,41 +1,103 @@
-"use client"
+import React, { useState, useRef, useEffect } from 'react';
+import './styles.css';
 
-import LyricsScreen from "@/components/LyricsScreen"
-import Music from "@/components/Music"
-import { motion, AnimatePresence } from "framer-motion"
-import Screen1 from "@/components/Screen1"
-import Screen2 from "@/components/Screen2"
-import { useState } from "react"
+const App = () => {
+  const [step, setStep] = useState(1); 
+  const youtubePlayerRef = useRef(null); 
 
-export default function Home() {
-  const [currentScreen, setCurrentScreen] = useState(1)
-  const [musicStarted, setMusicStarted] = useState(false)
+  const postMessageToPlayer = (command, args) => {
+    if (youtubePlayerRef.current) {
+      youtubePlayerRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: command, args: args || [] }), 
+        "*"
+      );
+    }
+  };
+
+  const handleNext = () => {
+    if (step === 2) {
+      setStep(3);
+      // STEP 3: 'Show Me' दबाने पर गाना बजाना शुरू होगा
+      postMessageToPlayer('playVideo');
+    } else {
+      setStep(step + 1);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black bg-gradient-to-tr from-purple-950/80 via-black to-pink-950/70">
+    <div className="container">
+      <div className="card">
+        
+        {/* YouTube Embed (Sultan version) */}
+        <div style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', zIndex: -1 }}>
+          <iframe 
+            ref={youtubePlayerRef}
+            id="youtube-player"
+            width="560" 
+            height="315" 
+            src="https://www.youtube.com/embed/_51KXfwcPMs?autoplay=0&enablejsapi=1&controls=0&modestbranding=1&loop=1&playlist=_51KXfwcPMs" 
+            title="Bulleya Song" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerPolicy="strict-origin-when-cross-origin" 
+            allowFullScreen
+          ></iframe>
+        </div>
 
-      <AnimatePresence mode="wait">
-        {currentScreen === 1 && <Screen1 key="screen1" onNext={() => setCurrentScreen(2)} />}
-        {currentScreen === 2 && <Screen2 key="screen2" onNext={() => {
-          setCurrentScreen(3)
-          setMusicStarted(true)
-        }} />}
-        {currentScreen === 3 && <LyricsScreen key="screen3" />}
-      </AnimatePresence>
+        {/* =======================
+            स्टेप 1: शुरुआती मैसेज 
+           ======================= */}
+        {step === 1 && (
+          <>
+            <h1>Something Special! 👋</h1>
+            <p>I know you are naraz right now, but this is something special just for you...</p> 
+            <p>And trust me... only YOU deserve this ✨</p>
+            <button onClick={handleNext}>Ready to Know</button>
+          </>
+        )}
 
-      {musicStarted && <Music shouldPlay={musicStarted} />}
+        {/* =======================
+            स्टेप 2: इंटरमीडिएट मैसेज 
+           ======================= */}
+        {step === 2 && (
+          <div className="reveal-content step-2">
+            <h2>Just one step more!</h2>
+            <p>This is for you...</p>
+            <button onClick={handleNext}>Show Me</button>
+          </div>
+        )}
 
-      {/* Watermark */}
-      <motion.div
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{
-          duration: 1,
-          delay: 1,
-        }}
-        className="fixed bottom-4 right-4 text-sm text-white/40 pointer-events-none z-50">
-        @krishna 
-      </motion.div>
+        {/* =======================
+            स्टेप 3: फाइनल गाना, लिरिक्स और मैसेज 
+           ======================= */}
+        {step === 3 && (
+          <div className="reveal-content step-3">
+            
+            <h3>♫ Bulleya (Sultan) ♫</h3>
+            
+            <div className="lyrics">
+               <p>Tu yaad kare ya na mujhko,</p>
+               <p>Mere jeene mein andaaz tera,</p>
+               <br/>
+               <p>Sar aankhon par hai teri naraazi,</p>
+               <p>Meri haar mein hai koi raaz tera.</p>
+            </div>
+            
+            <hr style={{margin: '15px 0', borderTop: '1px dashed #e4e4e4'}}/> 
+
+            {/* 💖 आपका फाइनल माफ़ी का मैसेज 💖 */}
+            <h2 style={{color: '#ff69b4', fontSize: '1.2em', marginBottom: '5px'}}>🌹 This is for you 💖</h2>
+            <p style={{fontWeight: 'bold'}}>Sorry, **Lakshu**! Ab maan jao naa yrr... So Sorry, mine bestie! 💓</p>
+
+
+            <p className="footer-message">@Krishna</p>
+          </div>
+        )}
+
+        <p className="footer">@Krishna</p> 
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default App;
