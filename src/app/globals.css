@@ -7,7 +7,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Changed min-height back to 100vh for centering */
+    min-height: 100vh; 
     overflow: auto; 
     animation: backgroundMove 20s infinite alternate; 
 }
@@ -39,6 +39,8 @@ body {
     animation: fadeIn 1s forwards;
     min-height: 400px; 
 }
+
+/* ... (rest of the css code) */
 
 @keyframes fadeIn {
     to { opacity: 1; transform: translateY(0); }
