@@ -3,7 +3,7 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #f0e6ff 0%, #b2e0ff 100%); /* Light purple/blue gradient */
+    background: linear-gradient(135deg, #f0e6ff 0%, #b2e0ff 100%); 
     display: flex;
     justify-content: center;
     align-items: center;
